@@ -22,5 +22,13 @@ namespace MainSystem.Domain.Services.Factories
         public SeatClass GetClass(SeatNumber seat) =>
             seat.Row <= 5 ? SeatClass.Business : SeatClass.Economy;
 
+        public IEnumerable<SeatNumber> GetSeats(SeatClass seatClass) =>
+        seatClass switch
+        {
+            SeatClass.Business => Seats.Where(s => s.Row <= 5),
+            SeatClass.Economy => Seats.Where(s => s.Row > 5),
+            _ => Enumerable.Empty<SeatNumber>()
+        };
+
     }
 }

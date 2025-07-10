@@ -12,11 +12,10 @@ namespace MainSystem.Domain.Services.Strategies
 {
     internal static class SeatAssignmentHelpers
     {
-        /// İlgili uçakta, verilen sınıftaki **boş** koltukları sıraya göre döndürür.
-        internal static List<SeatNumber> GetAvailableSeats(FlightRoster roster, SeatClass @class)
+        internal static List<SeatNumber> GetAvailableSeats(FlightRoster roster, SeatClass seatClass)
         {
-            var plan = SeatPlanFactory.Create(roster.Aircraft);     // kendi static fabrikandan geliyor
-            return plan.GetSeats(@class)                            // IEnumerable<SeatNumber>
+            ISeatPlan plan = SeatPlanFactory.Create(roster.Aircraft);    
+            return plan.GetSeats(seatClass)                           
                        .Except(roster.Passengers
                                      .Where(p => p.SeatNumber is not null)
                                      .Select(p => p.SeatNumber!))
@@ -35,7 +34,6 @@ namespace MainSystem.Domain.Services.Strategies
             }
         }
 
-        /// Koltuk listesi içinde ardışık `count` adet koltuk arar (aynı satır + harfler art arda).
         internal static IList<SeatNumber>? FindAdjacentBlock(IList<SeatNumber> list, int count)
         {
             var grouped = list.GroupBy(s => s.Row).OrderBy(g => g.Key);

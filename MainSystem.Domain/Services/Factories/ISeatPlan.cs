@@ -12,6 +12,7 @@ namespace MainSystem.Domain.Services.Factories
     {
         int TotalSeats { get; }
         IEnumerable<SeatNumber> AllSeats();
+        IEnumerable<SeatNumber> GetSeats(SeatClass seat);
         SeatClass GetClass(SeatNumber seat);
     }
 }

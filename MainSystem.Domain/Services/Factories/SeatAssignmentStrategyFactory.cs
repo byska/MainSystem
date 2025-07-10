@@ -32,5 +32,13 @@ namespace MainSystem.Domain.Services.Factories
             _map.TryGetValue(key, out var s)
                 ? s
                 : throw new NotSupportedException($"Tanımsız strateji: {key}");
+
+        public static ISeatAssignmentStrategy Create(ISeatPlan plan) =>
+      plan switch
+      {
+          AirbusA320Plan => new GroupAwareSeatAssignmentStrategy(),
+          Boeing737Plan => new GroupAwareSeatAssignmentStrategy(),
+          _ => new RandomSeatAssignmentStrategy()
+      };
     }
 }
