@@ -1,4 +1,5 @@
 ﻿using MainSystem.Domain.Entities;
+using MainSystem.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +14,16 @@ namespace MainSystem.Domain.Services.Strategies
 
         public void AssignSeats(FlightRoster roster)
         {
-            // 1) Grupları kur (ebeveyn–çocuk ve affiliated zincirlerini tek kümeye toplar)
             var groups = BuildGroups(roster.Passengers.Where(p => p.SeatNumber is null));
 
-            // 2) Her grup için blok ara
             foreach (var grp in groups)
             {
-                var seatClass = grp[0].SeatClass;                    
+                var seatTakers = grp.Where(p => !p.IsInfant).ToList();
+                if (seatTakers.Count == 0)       
+                    continue;
+
+                var seatClass = grp[0].SeatClass ?? SeatClass.Economy;
+
                 var freeSeats = SeatAssignmentHelpers.GetAvailableSeats(roster, seatClass);
                 var block = SeatAssignmentHelpers.FindAdjacentBlock(freeSeats, grp.Count);
 
@@ -59,7 +63,7 @@ namespace MainSystem.Domain.Services.Strategies
                 if (pm.ParentPassengerId is Guid parentId && dict.TryGetValue(parentId, out var parent))
                     DFS(parent, acc);
 
-                foreach (var childId in pm.AffiliatedPassengerIds)
+                foreach (var childId in pm.AffiliateIds)
                     if (dict.TryGetValue(childId, out var child))
                         DFS(child, acc);
             }

@@ -11,6 +11,7 @@ namespace MainSystem.Infrastructure.Persistence
     public class MainSystemDbContext : DbContext
     {
         public DbSet<FlightRoster> Rosters => Set<FlightRoster>();
+        public MainSystemDbContext(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

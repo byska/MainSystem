@@ -10,7 +10,6 @@ namespace MainSystem.Domain.Entities
     public abstract class RosterMember
     {
         public Guid Id { get; protected set; }  
-        public Guid PersonId { get; protected set; }  
         public PersonInfo Info { get; protected set; }
 
         protected RosterMember() { }  
@@ -18,7 +17,6 @@ namespace MainSystem.Domain.Entities
         protected RosterMember(Guid personId, PersonInfo info)
         {
             Id = Guid.NewGuid();
-            PersonId = personId;
             Info = info ?? throw new ArgumentNullException(nameof(info));
         }
     }

@@ -1,6 +1,7 @@
 ﻿using MainSystem.Domain.Entities;
 using MainSystem.Domain.Enums;
 using MainSystem.Domain.Services.Factories;
+using MainSystem.Domain.Services.Specifications;
 using MainSystem.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -45,17 +46,32 @@ namespace MainSystem.Domain.Services.Builders
             _passengers.AddRange(passengers);
             return this;
         }
-        /* -------------------------------- */
 
-        /// <exception cref="InvalidOperationException">Eksik zorunlu alan varsa fırlatır.</exception>
+        private void Validate()
+        {
+            var pilotRule = new PilotSenioritySpec();
+            var cabinRule = new CabinCrewCountSpec();
+
+            if (!pilotRule.IsSatisfiedBy(_pilots))
+                throw new InvalidOperationException(pilotRule.ErrorMessage!);
+
+            if (!cabinRule.IsSatisfiedBy(_attendants))
+                throw new InvalidOperationException(cabinRule.ErrorMessage!);
+        }
+
         public FlightRoster Build()
         {
+            Validate();
             if (_flightNo is null ||
                 _departure is null ||
                 _aircraft is null)
                 throw new InvalidOperationException("FlightRosterBuilder: uçuş numarası, kalkış zamanı ve uçak tipi zorunludur.");
 
             var roster = new FlightRoster(_flightNo, _departure.Value, _aircraft.Value);
+
+            if (!_pilots.Any(p => p.Seniority == PilotSeniorityLevel.Senior) ||
+    !_pilots.Any(p => p.Seniority == PilotSeniorityLevel.Junior))
+                throw new InvalidOperationException("Uçuşta en az 1 senior ve 1 junior pilot olmalıdır.");
 
             _pilots.ForEach(roster.AddMember);
             _attendants.ForEach(roster.AddMember);
