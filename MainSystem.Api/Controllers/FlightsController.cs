@@ -1,4 +1,5 @@
-﻿using MainSystem.Domain.Enums;
+﻿using MainSystem.Application.UseCases.FlightUseCases.Queries;
+using MainSystem.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ namespace MainSystem.Api.Controllers
             [FromQuery] bool? shared,
             CancellationToken ct)
         {
-            var flights = await _mediator.Send(new ListFlightsQuery(
+            var flights = await _mediator.Send(new ListFlightsQueryRequest(
                                               date, sourceCode, destCode,
                                               aircraft, shared), ct);
             return Ok(flights);

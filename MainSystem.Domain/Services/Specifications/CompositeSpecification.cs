@@ -11,25 +11,25 @@ namespace MainSystem.Domain.Services.Specifications
         public abstract bool IsSatisfiedBy(T candidate);
         public virtual string? ErrorMessage => null;
 
-        public ISpecification<T> And(ISpecification<T> other) =>
-            new AndSpecification<T>(this, other);
+        public CompositeSpecification<T> And(ISpecification<T> other) =>
+            new AndSpecification(this, other);
 
-        public ISpecification<T> Or(ISpecification<T> other) =>
-            new OrSpecification<T>(this, other);
+        public CompositeSpecification<T> Or(ISpecification<T> other) =>
+            new OrSpecification(this, other);
 
-        public ISpecification<T> Not() => new NotSpecification<T>(this);
-        private sealed class AndSpecification<TC> : CompositeSpecification<TC>
+        public CompositeSpecification<T> Not() => new NotSpecification(this);
+        private sealed class AndSpecification : CompositeSpecification<T>
         {
-            private readonly ISpecification<TC> _left, _right;
+            private readonly ISpecification<T> _left, _right;
             private string? _error;
 
-            public AndSpecification(ISpecification<TC> left, ISpecification<TC> right)
+            public AndSpecification(ISpecification<T> left, ISpecification<T> right)
             {
                 _left = left;
                 _right = right;
             }
 
-            public override bool IsSatisfiedBy(TC candidate)
+            public override bool IsSatisfiedBy(T candidate)
             {
                 if (!_left.IsSatisfiedBy(candidate))
                 {
@@ -50,18 +50,18 @@ namespace MainSystem.Domain.Services.Specifications
             public override string? ErrorMessage => _error;
         }
 
-        private sealed class OrSpecification<TC> : CompositeSpecification<TC>
+        private sealed class OrSpecification : CompositeSpecification<T>
         {
-            private readonly ISpecification<TC> _left, _right;
+            private readonly ISpecification<T> _left, _right;
             private string? _error;
 
-            public OrSpecification(ISpecification<TC> left, ISpecification<TC> right)
+            public OrSpecification(ISpecification<T> left, ISpecification<T> right)
             {
                 _left = left;
                 _right = right;
             }
 
-            public override bool IsSatisfiedBy(TC candidate)
+            public override bool IsSatisfiedBy(T candidate)
             {
                 if (_left.IsSatisfiedBy(candidate) || _right.IsSatisfiedBy(candidate))
                 {
@@ -69,24 +69,23 @@ namespace MainSystem.Domain.Services.Specifications
                     return true;
                 }
 
-                // İkisi de başarısızsa soldaki mesajı, yoksa sağdaki mesajı döndür.
                 _error = _left.ErrorMessage ?? _right.ErrorMessage;
                 return false;
             }
 
             public override string? ErrorMessage => _error;
         }
-        private sealed class NotSpecification<TC> : CompositeSpecification<TC>
+        private sealed class NotSpecification : CompositeSpecification<T>
         {
-            private readonly ISpecification<TC> _inner;
+            private readonly ISpecification<T> _inner;
             private string? _error;
 
-            public NotSpecification(ISpecification<TC> inner)
+            public NotSpecification(ISpecification<T> inner)
             {
                 _inner = inner;
             }
 
-            public override bool IsSatisfiedBy(TC candidate)
+            public override bool IsSatisfiedBy(T candidate)
             {
                 if (_inner.IsSatisfiedBy(candidate))
                 {
