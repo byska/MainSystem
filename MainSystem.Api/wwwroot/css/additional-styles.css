@@ -1,0 +1,95 @@
+/* Additional styles for crew and flights pages */
+
+.search-filter-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-filter-container .search-container {
+  flex: 1;
+  position: relative;
+}
+
+.search-filter-container .search-container i {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+.search-filter-container .search-container input {
+  padding-left: 2.5rem;
+}
+
+.flight-search-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.flight-search-container .search-container {
+  flex: 1;
+  position: relative;
+}
+
+.flight-search-container .search-container i {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+.flight-search-container .search-container input {
+  padding-left: 2.5rem;
+}
+
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  margin-right: 0.25rem;
+}
+
+.route-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.route-icon {
+  color: #6b7280;
+  font-size: 0.75rem;
+}
+
+.route-cities {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.flight-time {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .search-filter-container,
+  .flight-search-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-filter-container > *,
+  .flight-search-container > * {
+    width: 100%;
+  }
+
+  .btn-sm {
+    margin-bottom: 0.25rem;
+  }
+}

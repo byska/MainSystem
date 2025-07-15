@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using MainSystem.Application.UseCases.FlightRosterUseCases.Commands;
+using MainSystem.Application.UseCases.FlightRosterUseCases.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
@@ -6,12 +8,15 @@ using System.Text.Json;
 
 namespace MainSystem.Api.Controllers
 {
-    [Route("api/rosters")]
-    [ApiController]
-    public sealed class RostersController : ControllerBase
+
+    public sealed class RostersController : Controller
     {
         private readonly IMediator _mediator;
         public RostersController(IMediator mediator) => _mediator = mediator;
+        public IActionResult Index()
+        {
+            return View();
+        }
 
         [HttpPost("{flightNo}")]
         public async Task<IActionResult> Create(string flightNo, CancellationToken ct)
@@ -23,9 +28,10 @@ namespace MainSystem.Api.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> Get(Guid id, CancellationToken ct)
         {
-            var roster = await _mediator.Send(new GetRosterQuery(id), ct);
+            var roster = await _mediator.Send(new GetRosterByIdQueryRequest(id), ct);
             return roster is null ? NotFound() : Ok(roster);
         }
+
         [HttpGet("{id:guid}/plane-view")]
         public async Task<IActionResult> PlaneView(Guid id, CancellationToken ct)
         {
@@ -36,7 +42,7 @@ namespace MainSystem.Api.Controllers
         [HttpGet("{id:guid}/export")]
         public async Task<IActionResult> Export(Guid id, CancellationToken ct)
         {
-            var roster = await _mediator.Send(new GetRosterQuery(id), ct);
+            var roster = await _mediator.Send(new GetRosterByIdQueryRequest(id), ct);
             if (roster is null) return NotFound();
 
             var json = JsonSerializer.Serialize(roster,

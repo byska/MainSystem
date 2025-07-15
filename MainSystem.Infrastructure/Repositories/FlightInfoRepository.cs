@@ -17,19 +17,19 @@ namespace MainSystem.Infrastructure.Repositories
     {
         private readonly IFlightInfoAdapter _adapter;
         public FlightInfoRepository(IFlightInfoAdapter adapter) => _adapter = adapter;
-        public async Task<FlightRoster?> GetByIdAsync(Guid id, CancellationToken ct = default)
+        public async Task<Flight?> GetByIdAsync(Guid id, CancellationToken ct = default)
         {
             var flight = await _adapter.GetByIdAsync(id, ct);
             return flight is null ? null : Map(flight);
         }
 
-        public async Task<IReadOnlyList<FlightRoster>> ListAsync(ISpecification<FlightRoster>? spec = null, CancellationToken ct = default)
+        public async Task<IReadOnlyList<Flight>> ListAsync(ISpecification<Flight>? spec = null, CancellationToken ct = default)
         {
             var dtoList = await _adapter.ListAllAsync(ct);
             var domain = dtoList.Select(Map).ToList();
             return spec is null ? domain : domain.Where(spec.IsSatisfiedBy).ToList();
         }
-        private static FlightRoster Map(FlightDto d)
+        private static Flight Map(FlightDto d)
         {
             var source = new Airport(
                 d.SourceAirport.Country,
@@ -66,7 +66,7 @@ namespace MainSystem.Infrastructure.Repositories
                     shared.AddConnectingFlight(c.Destination, c.DepartureTime);
             }
 
-            var roster = new FlightRoster(
+            var roster = new Flight(
         new FlightNumber(d.FlightNumber),
         d.FlightDateTime,
         new FlightDuration(TimeSpan.FromMinutes(d.DurationMinutes)),
@@ -78,6 +78,13 @@ namespace MainSystem.Infrastructure.Repositories
         shared);
 
             return roster;
+        }
+
+        public async Task<Flight> GetByFlightAsync(FlightNumber flightNo, CancellationToken ct = default)
+        {
+          FlightDto flight = await _adapter.GetByFlightNoAsync(flightNo, ct);
+            return flight is null ? null : Map(flight);
+
         }
     }
 }

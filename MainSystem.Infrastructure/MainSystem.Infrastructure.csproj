@@ -1,29 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Seed\" />
-  </ItemGroup>
+	<!-- Gereksiz Remove’lar sende kalabilir, restore ile ilgisi yok -->
+	<ItemGroup>
+		<Compile Remove="Persistence\Configurations\RosterMemberConfiguration.cs" />
+		<Compile Remove="PersonInfo.cs" />
+		<Compile Remove="Repositories\RosterRepository.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.6">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+	<ItemGroup>
+		<!-- HEPSİ 8.0.18 -->
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.18" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore"               Version="8.0.18" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational"    Version="8.0.18" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer"     Version="8.0.18" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design"        Version="8.0.18" PrivateAssets="all" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MainSystem.Application\MainSystem.Application.csproj" />
-    <ProjectReference Include="..\MainSystem.Domain\MainSystem.Domain.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\MainSystem.Application\MainSystem.Application.csproj" />
+		<ProjectReference Include="..\MainSystem.Domain\MainSystem.Domain.csproj" />
+	</ItemGroup>
 
 </Project>

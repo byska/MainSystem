@@ -2,12 +2,14 @@
 using MainSystem.Domain.Services.Factories;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MainSystem.Domain.Entities
 {
+    [NotMapped]
     public class VehicleType
     {
         public Guid Id { get; private set; } = Guid.NewGuid();

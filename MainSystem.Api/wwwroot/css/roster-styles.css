@@ -1,0 +1,128 @@
+/* Roster specific styles */
+.roster-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.flight-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.detail-item label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.detail-item div {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.detail-item small {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.crew-section {
+  margin-bottom: 2rem;
+}
+
+.crew-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.crew-section:not(:last-child) {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 2rem;
+}
+
+/* Seat plan specific styles */
+.seat-plan h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.cockpit .seat-grid {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 200px;
+  margin: 0 auto;
+}
+
+.crew-stations .seat-grid {
+  grid-template-columns: repeat(4, 1fr);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.seat.crew {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  color: #1d4ed8;
+}
+
+.seat.cabin-crew {
+  background: #d1fae5;
+  border-color: #10b981;
+  color: #065f46;
+}
+
+.seat.chef {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
+}
+
+/* Responsive adjustments for roster */
+@media (max-width: 768px) {
+  .roster-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header-actions {
+    justify-content: stretch;
+  }
+
+  .header-actions > * {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .flight-details-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .flight-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .header-actions {
+    flex-direction: column;
+  }
+}

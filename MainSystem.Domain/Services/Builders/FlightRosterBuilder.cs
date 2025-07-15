@@ -13,21 +13,17 @@ namespace MainSystem.Domain.Services.Builders
 {
     public sealed class FlightRosterBuilder
     {
-        private FlightNumber? _flightNo;
-        private DateTime? _departure;
-        private AircraftType? _aircraft;
-
+        private Flight? _flight;
         private readonly List<PilotMember> _pilots = new();
         private readonly List<CabinAttendantMember> _attendants = new();
         private readonly List<PassengerMember> _passengers = new();
 
-        public FlightRosterBuilder ForFlight(FlightNumber flightNo, DateTime departure, AircraftType aircraft)
+        public FlightRosterBuilder ForFlight(Flight flight)
         {
-            _flightNo = flightNo;
-            _departure = departure;
-            _aircraft = aircraft;
+            _flight = flight ?? throw new ArgumentNullException(nameof(flight));
             return this;
         }
+
 
         public FlightRosterBuilder WithPilots(IEnumerable<PilotMember> pilots)
         {
@@ -49,6 +45,9 @@ namespace MainSystem.Domain.Services.Builders
 
         private void Validate()
         {
+            if (_flight is null)
+                throw new InvalidOperationException("Flight bilgisi set edilmemiş.");
+
             var pilotRule = new PilotSenioritySpec();
             var cabinRule = new CabinCrewCountSpec();
 
@@ -57,30 +56,22 @@ namespace MainSystem.Domain.Services.Builders
 
             if (!cabinRule.IsSatisfiedBy(_attendants))
                 throw new InvalidOperationException(cabinRule.ErrorMessage!);
+
+            if (_passengers.Count > _flight.MaxPassengers)
+                throw new InvalidOperationException("Yolcu kapasitesi aşıldı.");
         }
 
         public FlightRoster Build()
         {
             Validate();
-            if (_flightNo is null ||
-                _departure is null ||
-                _aircraft is null)
-                throw new InvalidOperationException("FlightRosterBuilder: uçuş numarası, kalkış zamanı ve uçak tipi zorunludur.");
 
-            var roster = new FlightRoster(_flightNo, _departure.Value, _aircraft.Value);
+            var roster = new FlightRoster(_flight!);
 
-            if (!_pilots.Any(p => p.Seniority == PilotSeniorityLevel.Senior) ||
-    !_pilots.Any(p => p.Seniority == PilotSeniorityLevel.Junior))
-                throw new InvalidOperationException("Uçuşta en az 1 senior ve 1 junior pilot olmalıdır.");
+            _pilots.ForEach(roster.AddPilot);
+            _attendants.ForEach(roster.AddAttendant);
+            _passengers.ForEach(roster.AddPassenger);
 
-            _pilots.ForEach(roster.AddMember);
-            _attendants.ForEach(roster.AddMember);
-            _passengers.ForEach(roster.AddMember);
-
-            ISeatPlan seatPlan = SeatPlanFactory.Create(_aircraft.Value);
-            Strategies.ISeatAssignmentStrategy strategy = SeatAssignmentStrategyFactory.Create(seatPlan);
-
-            strategy.AssignSeats(roster);
+            roster.AssignSeats();
 
             return roster;
         }

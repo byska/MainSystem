@@ -22,7 +22,20 @@ namespace MainSystem.Infrastructure.External.Adapters
         }
         public async Task<FlightDto> GetByIdAsync(Guid id, CancellationToken ct = default)
         {
-            var resp = await _http.GetAsync($"api/flight/{id}", ct);
+            var resp = await _http.GetAsync($"api/flight/by-id/{id}", ct);
+
+            if (resp.StatusCode == HttpStatusCode.NotFound)
+                return null;
+
+            resp.EnsureSuccessStatusCode();
+
+            FlightDto dto = await resp.Content.ReadFromJsonAsync<FlightDto>(_opt, ct);
+            return dto;
+        }
+
+        public async Task<FlightDto> GetByFlightNoAsync(string flightNo, CancellationToken ct = default)
+        {
+            var resp = await _http.GetAsync($"api/flight/by-number/{flightNo}", ct);
 
             if (resp.StatusCode == HttpStatusCode.NotFound)
                 return null;

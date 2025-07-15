@@ -8,38 +8,66 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace MainSystem.Infrastructure.Persistence.Configurations
 {
     public sealed class FlightRosterConfiguration : IEntityTypeConfiguration<FlightRoster>
     {
-        public void Configure(EntityTypeBuilder<FlightRoster> builder)
+        public void Configure(EntityTypeBuilder<FlightRoster> b)
         {
-            builder.HasKey(x => x.Id);
+            b.ToTable("FlightRosters");
+            b.HasKey(r => r.Id);
 
-            builder.Property(x => x.FlightNo)
-                   .HasColumnName("FlightNumber")
-                   .HasConversion(v => v.Value,
-                                  v => new FlightNumber(v))
-                   .HasMaxLength(6)
-                   .IsRequired();
+            b.Property(r => r.CreatedAt)
+             .IsRequired();
 
-            builder.Property(x => x.DepartureTime)
-                   .IsRequired();
+            // Flight sadece ID olarak saklanıyor
+            b.Property<Guid>("FlightId")
+             .IsRequired();
 
-            builder.Property(x => x.Aircraft)
-                   .HasConversion<int>();         
+            // Flight navigation runtime’da doldurulacak, DB ile ilişkisi yok
+            b.Ignore(r => r.Flight);
 
-            builder.HasMany<RosterMember>("_members")
-                   .WithOne()
-                   .HasForeignKey("FlightRosterId")
-                   .IsRequired()
-                   .OnDelete(DeleteBehavior.Cascade);
+       
+          
 
-            builder.Ignore(x => x.Pilots);
-            builder.Ignore(x => x.CabinAttendants);
-            builder.Ignore(x => x.Passengers);
+            // 🧑‍✈️ Pilots
+            b.OwnsMany(r => r.Pilots, p =>
+            {
+                p.ToTable("FlightRoster_Pilots");
+                p.WithOwner().HasForeignKey("RosterId");
 
-            builder.HasIndex(x => x.FlightNo).IsUnique();
+                p.Property<Guid>("Id");
+                p.HasKey("Id");
+
+           
+                
+            });
+
+            b.OwnsMany(r => r.Attendants, p =>
+            {
+                p.ToTable("FlightRoster_Attendants");
+                p.WithOwner().HasForeignKey("RosterId");
+
+                p.Property<Guid>("Id");
+                p.HasKey("Id");
+
+                p.Property(x => x.PersonId).IsRequired();
+
+              
+            });
+            b.OwnsMany(r => r.Passengers, p =>
+            {
+                p.ToTable("FlightRoster_Passengers");
+                p.WithOwner().HasForeignKey("RosterId");
+
+                p.Property<Guid>("Id");
+                p.HasKey("Id");
+
+
+             
+            });
+
         }
     }
 }

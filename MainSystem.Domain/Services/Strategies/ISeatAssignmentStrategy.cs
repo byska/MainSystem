@@ -11,7 +11,7 @@ namespace MainSystem.Domain.Services.Strategies
     public interface ISeatAssignmentStrategy
     {
         string Key { get; }
-        /// <summary>Uçağın mevcut koltuk planına göre yolculara koltuk atar.</summary>
+    
         void AssignSeats(FlightRoster roster);
     }
 }

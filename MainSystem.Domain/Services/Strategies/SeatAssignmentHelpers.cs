@@ -14,7 +14,7 @@ namespace MainSystem.Domain.Services.Strategies
     {
         internal static List<SeatNumber> GetAvailableSeats(FlightRoster roster, SeatClass seatClass)
         {
-            ISeatPlan plan = SeatPlanFactory.Create(roster.Aircraft);    
+            ISeatPlan plan = SeatPlanFactory.Create(roster.Flight.Aircraft);    
             return plan.GetSeats(seatClass)                           
                        .Except(roster.Passengers
                                      .Where(p => p.SeatNumber is not null)

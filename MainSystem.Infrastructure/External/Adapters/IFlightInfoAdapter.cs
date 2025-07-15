@@ -11,6 +11,7 @@ namespace MainSystem.Infrastructure.External.Adapters
     {
         Task<IReadOnlyList<FlightDto>> ListAllAsync(CancellationToken ct = default);
         Task<FlightDto> GetByIdAsync(Guid id, CancellationToken ct = default);
+        Task<FlightDto> GetByFlightNoAsync(string flightNo, CancellationToken ct = default);
 
     }
 }

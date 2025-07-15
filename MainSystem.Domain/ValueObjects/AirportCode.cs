@@ -9,8 +9,11 @@ namespace MainSystem.Domain.ValueObjects
 {
     public class AirportCode
     {
-        public string Value { get; }
-
+        public string Value { get; private set; }
+        public AirportCode()
+        {
+            
+        }
         public AirportCode(string value)
         {
             if (!Regex.IsMatch(value, "^[A-Z]{3}$"))

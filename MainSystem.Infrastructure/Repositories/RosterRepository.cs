@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MainSystem.Infrastructure.Repositories
 {
-    public sealed class RosterRepository : ReadOnlyRepository<FlightRoster>, IRosterRepository
+    public sealed class RosterRepository : ReadOnlyRepository<FlightRoster>, IFlightRosterRepository
     {
         private readonly MainSystemDbContext _db;
 

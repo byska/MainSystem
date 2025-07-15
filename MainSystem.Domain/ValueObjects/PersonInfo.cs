@@ -9,11 +9,11 @@ namespace MainSystem.Domain.ValueObjects
 {
     public sealed record PersonInfo
     {
-        public string Name { get; }
-        public int Age { get; }
-        public string Gender { get; }
-        public string Nationality { get; }
-        public IReadOnlyCollection<string> Languages { get; }
+        public string Name { get; private set; }
+        public int Age { get; private set; }
+        public string Gender { get; private set; }
+        public string Nationality { get; private set; }
+        public IReadOnlyCollection<string> Languages { get; private set; }
 
         private PersonInfo() { }
 

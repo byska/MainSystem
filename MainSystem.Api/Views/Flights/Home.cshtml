@@ -1,0 +1,256 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model MainSystem.Web.Models.SearchFlightViewModel
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Roster Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-plane"></i>
+                <span>FlightRoster</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a asp-controller="Flight" asp-action="Home" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+                <a asp-controller="Rosters" asp-action="Home" class="nav-link">
+                    <i class="fas fa-file-text"></i>
+                    Rosters
+                </a>
+                <a asp-controller="Rosters" asp-action="Manage" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    Crew Management
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Header -->
+            <div class="page-header">
+                <div class="header-content">
+                    <div class="header-icon">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                    <div>
+                        <h1>Flight Roster Management System</h1>
+                        <p>Comprehensive flight crew and passenger management platform</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>24</h3>
+                        <p>Active Flights</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>156</h3>
+                        <p>Available Crew</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-file-text"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>89</h3>
+                        <p>Generated Rosters</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3>12</h3>
+                        <p>Exports Today</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Grid -->
+            <div class="main-grid">
+                <!-- Flight Selection -->
+                <form asp-action="Home" asp-controller="Rosters" method="post">
+                    <div>
+                        <label>Flight Number</label>
+                        <input asp-for="FlightNumber" class="form-input" />
+                    </div>
+
+                    <div>
+                        <label>Date</label>
+                        <input asp-for="Date" type="date" class="form-input" />
+                    </div>
+
+                    <div>
+                        <label>Source Code</label>
+                        <input asp-for="SourceCode" class="form-input" />
+                    </div>
+
+                    <div>
+                        <label>Destination Code</label>
+                        <input asp-for="DestCode" class="form-input" />
+                    </div>
+
+                    <div>
+                        <label>Aircraft</label>
+                        <select asp-for="Aircraft" asp-items="Html.GetEnumSelectList<AircraftType>()" class="form-input">
+                            <option value="">Select Aircraft</option>
+                        </select>
+                    </div>
+
+                    <button type="submit">Search</button>
+                </form>
+
+                <!-- System Overview -->
+                <div class="system-overview">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>System Overview</h2>
+                            <p>Flight roster management capabilities</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="tabs">
+                                <div class="tab-buttons">
+                                    <button class="tab-btn active" onclick="showTab('features')">Features</button>
+                                    <button class="tab-btn" onclick="showTab('apis')">APIs</button>
+                                    <button class="tab-btn" onclick="showTab('views')">Roster Views</button>
+                                </div>
+
+                                <div class="tab-content active" id="features">
+                                    <div class="features-grid">
+                                        <div class="feature-card">
+                                            <h4>Crew Management</h4>
+                                            <p>Automatic and manual crew selection with constraint validation</p>
+                                        </div>
+                                        <div class="feature-card">
+                                            <h4>Seat Assignment</h4>
+                                            <p>Intelligent seat allocation for passengers without assigned seats</p>
+                                        </div>
+                                        <div class="feature-card">
+                                            <h4>Data Integration</h4>
+                                            <p>Combines data from multiple service providers seamlessly</p>
+                                        </div>
+                                        <div class="feature-card">
+                                            <h4>Export & Storage</h4>
+                                            <p>Store rosters locally and export in JSON format</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-content" id="apis">
+                                    <div class="api-list">
+                                        <div class="api-item">
+                                            <div class="api-status"></div>
+                                            <div>
+                                                <h4>Flight Information API</h4>
+                                                <p>Flight details, schedules, and aircraft information</p>
+                                            </div>
+                                        </div>
+                                        <div class="api-item">
+                                            <div class="api-status"></div>
+                                            <div>
+                                                <h4>Flight Crew API</h4>
+                                                <p>Pilot information, qualifications, and availability</p>
+                                            </div>
+                                        </div>
+                                        <div class="api-item">
+                                            <div class="api-status"></div>
+                                            <div>
+                                                <h4>Cabin Crew API</h4>
+                                                <p>Flight attendant details and specializations</p>
+                                            </div>
+                                        </div>
+                                        <div class="api-item">
+                                            <div class="api-status"></div>
+                                            <div>
+                                                <h4>Passenger API</h4>
+                                                <p>Passenger manifests and seating preferences</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-content" id="views">
+                                    <div class="views-list">
+                                        <div class="view-card">
+                                            <h4>📊 Tabular View</h4>
+                                            <p>Summary table with all personnel information in a structured format</p>
+                                        </div>
+                                        <div class="view-card">
+                                            <h4>✈️ Plane View</h4>
+                                            <p>Interactive seat plan with hover information for each position</p>
+                                        </div>
+                                        <div class="view-card">
+                                            <h4>📋 Extended View</h4>
+                                            <p>Detailed tables separated by personnel type with comprehensive information</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <a asp-controller="Rosters" asp-action="Home" class="action-card">
+                            <i class="fas fa-file-text"></i>
+                            <h3>View Rosters</h3>
+                            <p>Browse existing flight rosters</p>
+                        </a>
+                        <a asp-controller="Rosters" asp-action="Manage" class="action-card">
+                            <i class="fas fa-users"></i>
+                            <h3>Manage Crew</h3>
+                            <p>View and manage crew information</p>
+                        </a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toast-message">Operation completed successfully!</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -8,9 +8,12 @@ namespace MainSystem.Domain.ValueObjects
 {
     public sealed record SeatNumber
     {
-        public int Row { get; }
-        public char Column { get; }
-
+        public int Row { get; private set; }
+        public char Column { get; private set; }
+        public SeatNumber()
+        {
+            
+        }
         public SeatNumber(int row, char column)
         {
             if (row <= 0) throw new ArgumentException("Row must be positive.", nameof(row));
@@ -21,5 +24,26 @@ namespace MainSystem.Domain.ValueObjects
         }
 
         public override string ToString() => $"{Row}{Column}";
+
+        public static SeatNumber Parse(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Null/empty seat.", nameof(value));
+
+            var digits = new string(value.TakeWhile(char.IsDigit).ToArray());
+            var letter = value.SkipWhile(char.IsDigit).FirstOrDefault();
+
+            if (!int.TryParse(digits, out var row) || !char.IsLetter(letter))
+                throw new FormatException($"Geçersiz koltuk formatı: {value}");
+
+            return new SeatNumber(row, char.ToUpperInvariant(letter));
+        }
+
+        public static bool TryParse(string? value, out SeatNumber? seat)
+        {
+            seat = null;
+            try { seat = Parse(value!); return true; }
+            catch { return false; }
+        }
     }
 }

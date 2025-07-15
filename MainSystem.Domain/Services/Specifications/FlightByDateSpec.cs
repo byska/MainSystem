@@ -8,22 +8,22 @@ using System.Threading.Tasks;
 
 namespace MainSystem.Domain.Services.Specifications
 {
-    public sealed class FlightByDateSpec : ISpecification<FlightRoster>
+    public sealed class FlightByDateSpec : ISpecification<Flight>
     {
         private readonly DateOnly _date;
         public FlightByDateSpec(DateOnly date) => _date = date;
 
-        public bool IsSatisfiedBy(FlightRoster f) =>
+        public bool IsSatisfiedBy(Flight f) =>
             DateOnly.FromDateTime(f.DepartureTime) == _date;
 
         public string? ErrorMessage => null;
     }
 
-    public sealed class FlightByAircraftSpec : ISpecification<FlightRoster>
+    public sealed class FlightByAircraftSpec : ISpecification<Flight>
     {
         private readonly AircraftType _aircraft;
         public FlightByAircraftSpec(AircraftType t) => _aircraft = t;
-        public bool IsSatisfiedBy(FlightRoster f) => f.Aircraft == _aircraft;
+        public bool IsSatisfiedBy(Flight f) => f.Aircraft == _aircraft;
         public string? ErrorMessage => null;
     }
 }

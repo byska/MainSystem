@@ -8,8 +8,11 @@ namespace MainSystem.Domain.ValueObjects
 {
     public class FlightDuration
     {
-        public TimeSpan Value { get; }
-
+        public TimeSpan Value { get; private set; }
+        public FlightDuration()
+        {
+            
+        }
         public FlightDuration(TimeSpan value)
         {
             if (value.TotalMinutes < 5)
