@@ -1,5 +1,7 @@
-﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@model MainSystem.Web.Models.SearchFlightViewModel
+﻿@using MainSystem.Api.Models
+@using MainSystem.Domain.Enums
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model FlightIndexViewModel
 
 <!DOCTYPE html>
 <html lang="tr">
@@ -68,7 +70,7 @@
                         <i class="fas fa-plane"></i>
                     </div>
                     <div class="stat-content">
-                        <h3>24</h3>
+                        <h3>@Model.Dashboard.ActiveFlightCount</h3>
                         <p>Active Flights</p>
                     </div>
                 </div>
@@ -77,8 +79,8 @@
                         <i class="fas fa-users"></i>
                     </div>
                     <div class="stat-content">
-                        <h3>156</h3>
-                        <p>Available Crew</p>
+                        <h3>@Model.Dashboard.AvailablePilotCount</h3>
+                        <p>Available Pilot</p>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -86,8 +88,8 @@
                         <i class="fas fa-file-text"></i>
                     </div>
                     <div class="stat-content">
-                        <h3>89</h3>
-                        <p>Generated Rosters</p>
+                        <h3>@Model.Dashboard.AvailableCrewCount</h3>
+                        <p>Available Crew</p>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -95,8 +97,8 @@
                         <i class="fas fa-download"></i>
                     </div>
                     <div class="stat-content">
-                        <h3>12</h3>
-                        <p>Exports Today</p>
+                        <h3>@Model.Dashboard.RosterCount</h3>
+                        <p>Generated Rosters</p>
                     </div>
                 </div>
             </div>
@@ -107,27 +109,27 @@
                 <form asp-action="Home" asp-controller="Rosters" method="post">
                     <div>
                         <label>Flight Number</label>
-                        <input asp-for="FlightNumber" class="form-input" />
+                        <input asp-for="@Model.Search.FlightNumber" class="form-input" />
                     </div>
 
                     <div>
                         <label>Date</label>
-                        <input asp-for="Date" type="date" class="form-input" />
+                        <input asp-for="@Model.Search.Date" type="date" class="form-input" />
                     </div>
 
                     <div>
                         <label>Source Code</label>
-                        <input asp-for="SourceCode" class="form-input" />
+                        <input asp-for="@Model.Search.SourceCode" class="form-input" />
                     </div>
 
                     <div>
                         <label>Destination Code</label>
-                        <input asp-for="DestCode" class="form-input" />
+                        <input asp-for="@Model.Search.DestCode" class="form-input" />
                     </div>
 
                     <div>
                         <label>Aircraft</label>
-                        <select asp-for="Aircraft" asp-items="Html.GetEnumSelectList<AircraftType>()" class="form-input">
+                        <select asp-for="@Model.Search.Aircraft" asp-items="Html.GetEnumSelectList<AircraftType>()" class="form-input">
                             <option value="">Select Aircraft</option>
                         </select>
                     </div>
