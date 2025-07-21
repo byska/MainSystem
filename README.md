@@ -12,50 +12,96 @@ A comprehensive .NET 8 application for managing flight crew and passenger assign
 
 1. **Navigate to the project root** (where `MainSystem.sln` is located):
    ```bash
-   cd MainSystem
+   cd <root_folder>
    ```
 
-2. **Restore NuGet packages**:
+2. **Set up virtual environment and install dependencies**:
    ```bash
-   dotnet restore
+   chmod +x setup.sh
+   ./setup.sh
    ```
 
-3. **Build the solution**:
+3. **Run the core commands anytime after setup**:
    ```bash
-   dotnet build
+   chmod +x run.sh
+   ./run.sh
    ```
 
-4. **Discover and list all tests**:
+## Scripts Overview
+
+### Setup and Execution Scripts
+
+- **`setup.sh`** - Creates virtual environment, downloads all dependencies, and runs initial setup
+  ```bash
+  ./setup.sh
+  ```
+  This script:
+  - Creates `.dotnet-env` virtual environment
+  - Downloads all NuGet packages to the isolated environment
+  - Runs `dotnet restore`, `dotnet build`, and `dotnet test --list-tests`
+
+- **`run.sh`** - Runs the three core commands using the existing virtual environment
+  ```bash
+  ./run.sh
+  ```
+  This script runs:
+  - `dotnet restore`
+  - `dotnet build` 
+  - `dotnet test --list-tests`
+
+### Cleanup Script
+
+- **`cleanup.sh`** - Complete cleanup including virtual environment
+  ```bash
+  chmod +x cleanup.sh
+  ./cleanup.sh
+  ```
+  This script removes:
+  - Build artifacts (`bin/`, `obj/`)
+  - Virtual environment (`.dotnet-env/`)
+  - IDE files (`.vs/`, `.idea/`)
+  - Test results and logs
+  - User-specific files
+  - NuGet caches
+
+## Virtual Environment
+
+The project uses an isolated .NET environment stored in `.dotnet-env/` which contains:
+- **NuGet Packages**: All project dependencies isolated from global cache
+- **Tools**: Project-specific .NET tools
+- **Configuration**: Isolated CLI settings
+
+### Key Dependencies Managed in Virtual Environment:
+- **Microsoft.Extensions.DependencyInjection** v9.0.6
+- **Microsoft.NET.Test.Sdk** v17.8.0
+- **xunit** v2.4.2, **xunit.runner.visualstudio** v2.4.5
+- **FluentAssertions** v6.12.0
+- **Moq** v4.20.69
+- **Microsoft.AspNetCore.Mvc.Testing** v8.0.0
+- **Microsoft.EntityFrameworkCore.InMemory** v8.0.0
+- **Microsoft.AspNetCore.Identity.EntityFrameworkCore** v8.0.18
+- **Microsoft.AspNetCore.Authentication.JwtBearer** v8.0.18
+- **Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation** v8.0.18
+- **Swashbuckle.AspNetCore** v6.6.2
+- **Microsoft.EntityFrameworkCore.Design** v8.0.18
+- **MediatR** v13.0.0
+
+## Typical Workflow
+
+1. **Clean start** (if needed):
    ```bash
-   dotnet test --list-tests
+   ./cleanup.sh
    ```
 
-5. **Run all tests**:
+2. **Set up environment**:
    ```bash
-   dotnet test -v normal
+   ./setup.sh
    ```
 
-## Cleanup
-
-
-### Cleanup Scripts
-The project includes automated cleanup scripts:
-
-- **`cleanup.sh`** - Standard cleanup (removes bin/obj, temp files, test results)
-```bash
-# Make scripts executable
-chmod +x cleanup.sh
-# Run standard cleanup
-./cleanup.sh
-```
-
-### Git Ignore
-The project includes a comprehensive `.gitignore` file that prevents:
-- Build artifacts (`bin/`, `obj/`)
-- IDE files (`.vs/`, `.idea/`)
-- Test results and logs
-- User-specific files
-- Performance test reports
+3. **Run commands** (can be repeated):
+   ```bash
+   ./run.sh
+   ```
 
 ## Project Structure
 
@@ -73,8 +119,11 @@ MainSystem/
 │   ├── Acceptance/                  # Feature-based acceptance tests
 │   ├── Security/                    # Authentication & authorization tests
 │   └── Performance/                 # Load & stress tests
-├── cleanup.sh                       # Cleanup script
-└── README.md                        # This file
+├── .dotnet-env/                     # Virtual environment (created by setup.sh)
+├── setup.sh                        # Setup script with virtual environment
+├── run.sh                          # Run core commands script
+├── cleanup.sh                      # Cleanup script (includes venv)
+└── README.md                       # This file
 ```
 
 ## Testing Strategy
@@ -93,6 +142,13 @@ The project includes comprehensive testing at multiple levels:
 ### Running Tests
 
 ```bash
+# Use the run.sh script for basic test discovery
+./run.sh
+
+# Or run tests manually in the virtual environment:
+export DOTNET_CLI_HOME="$(pwd)/.dotnet-env"
+export NUGET_PACKAGES="$(pwd)/.dotnet-env/packages"
+
 # List all available tests
 dotnet test --list-tests
 
@@ -119,18 +175,35 @@ dotnet test --logger "console;verbosity=detailed"
 
 ## Troubleshooting
 
-### If `dotnet test --list-tests` shows errors:
+### If setup fails:
 1. Make sure you're in the project root (where `MainSystem.sln` is)
 2. Run cleanup: `./cleanup.sh`
-3. Restore packages: `dotnet restore`
-4. Build: `dotnet build`
-5. Try again: `dotnet test --list-tests`
+3. Try setup again: `./setup.sh`
 
-##  Notes
+### If `run.sh` fails:
+1. Ensure virtual environment exists: `ls -la .dotnet-env`
+2. If missing, run setup: `./setup.sh`
+3. Check for .NET 8 compatibility
 
-- Always run commands from the **solution root** directory
-- Use cleanup scripts regularly to maintain a clean environment  
+### Environment Issues:
+- **Missing .NET 8**: The setup script will attempt to install .NET 8 SDK if needed
+- **Permission Issues**: Use `sudo` if file permission errors occur during cleanup
+- **Corrupted Environment**: Run `./cleanup.sh` then `./setup.sh` for fresh start
+
+### Manual Commands (if scripts fail):
+```bash
+# Manual restore with virtual environment
+export NUGET_PACKAGES="$(pwd)/.dotnet-env/packages"
+dotnet restore --packages "$NUGET_PACKAGES"
+dotnet build --no-restore
+dotnet test --list-tests --no-build
+```
+
+## Notes
+
+- Always run scripts from the **solution root** directory
+- The virtual environment (`.dotnet-env/`) is excluded from Git
+- Use `cleanup.sh` regularly to maintain a clean environment  
 - The `.gitignore` file prevents build artifacts from being committed
 - Integration tests require the API to be running
 - Performance tests are optional and can be disabled if causing issues
-
