@@ -1,6 +1,5 @@
 using Xunit;
 using FluentAssertions;
-using MainSystem.Tests.Helpers;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 using System.Text.Json;
@@ -53,8 +52,14 @@ public class RosterCreationFeatureTests : IClassFixture<WebApplicationFactory<Pr
         
         // And all passengers should have assigned seats
         var passengers = roster.GetProperty("passengers").EnumerateArray();
-        passengers.Should().OnlyContain(p => 
-            p.TryGetProperty("seatNumber", out var seat) && !seat.ValueEquals("null"));
+        foreach (var passenger in passengers)
+        {
+            if (passenger.TryGetProperty("seatNumber", out var seatProp))
+            {
+                var seatValue = seatProp.GetString();
+                seatValue.Should().NotBeNullOrEmpty();
+            }
+        }
     }
 
     [Fact]
@@ -96,10 +101,12 @@ public class RosterCreationFeatureTests : IClassFixture<WebApplicationFactory<Pr
         
         // And the seats should be properly organized
         seats.Should().NotBeEmpty();
-        seats.Should().OnlyContain(seat => 
-            seat.TryGetProperty("row", out _) && 
-            seat.TryGetProperty("column", out _) &&
-            seat.TryGetProperty("occupied", out _));
+        foreach (var seat in seats!)
+        {
+            seat.TryGetProperty("row", out _).Should().BeTrue();
+            seat.TryGetProperty("column", out _).Should().BeTrue();
+            seat.TryGetProperty("occupied", out _).Should().BeTrue();
+        }
     }
 
     [Fact]

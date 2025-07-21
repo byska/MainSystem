@@ -4,6 +4,7 @@ using MainSystem.Application.Abstraction;
 using MainSystem.Application.UseCases.FlightRosterUseCases.Commands;
 using MainSystem.Domain.Entities;
 using MainSystem.Domain.Services.Builders;
+using MainSystem.Domain.Services.Specifications;
 using MainSystem.Domain.ValueObjects;
 using MainSystem.Tests.Helpers.TestData;
 using Moq;
@@ -55,9 +56,9 @@ public class CreateRosterCommandHandlerTests
             .ReturnsAsync(flight);
         _passengerRepo.Setup(x => x.ListByFlightAsync(It.IsAny<FlightNumber>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(passengers);
-        _pilotRepo.Setup(x => x.ListAsync(It.IsAny<ISpecification<PilotMember>>(), It.IsAny<CancellationToken>()))
+        _pilotRepo.Setup(x => x.ListAsync(It.IsAny<ISpecification<PilotMember>?>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(pilots);
-        _cabinRepo.Setup(x => x.ListAsync(It.IsAny<ISpecification<CabinAttendantMember>>(), It.IsAny<CancellationToken>()))
+        _cabinRepo.Setup(x => x.ListAsync(It.IsAny<ISpecification<CabinAttendantMember>?>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(attendants);
 
         var command = new CreateRosterCommand(flightNumber);
