@@ -38,6 +38,9 @@ force_remove ".idea"
 force_remove "packages"
 force_remove "TestResults"
 
+# Remove virtual environment
+force_remove ".dotnet-env"
+
 # Clean NuGet caches
 echo "📦 Cleaning NuGet caches..."
 dotnet nuget locals all --clear 2>/dev/null || true
@@ -61,6 +64,5 @@ find . -name "Thumbs.db" -type f -delete 2>/dev/null || true
 
 echo ""
 echo "✅ Deep cleanup completed!"
-echo "🔄 Now run: dotnet restore"
-echo "🔨 Then run: dotnet build"
-echo "🧪 Finally: dotnet test --list-tests"
+echo "🔄 Now run: ./setup.sh"
+echo "🚀 Then run: ./run.sh"
