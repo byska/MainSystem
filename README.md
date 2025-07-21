@@ -27,28 +27,6 @@ A comprehensive .NET 8 application for managing flight crew and passenger assign
    ./run.sh
    ```
 
-## Scripts Overview
-
-### Setup and Execution Scripts
-
-- **`setup.sh`** - Creates virtual environment, downloads all dependencies, and runs initial setup
-  ```bash
-  ./setup.sh
-  ```
-  This script:
-  - Creates `.dotnet-env` virtual environment
-  - Downloads all NuGet packages to the isolated environment
-  - Runs `dotnet restore`, `dotnet build`, and `dotnet test --list-tests`
-
-- **`run.sh`** - Runs the three core commands using the existing virtual environment
-  ```bash
-  ./run.sh
-  ```
-  This script runs:
-  - `dotnet restore`
-  - `dotnet build` 
-  - `dotnet test --list-tests`
-
 ### Cleanup Script
 
 - **`cleanup.sh`** - Complete cleanup including virtual environment
