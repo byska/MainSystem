@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Crew - FlightRoster</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assign-crew-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-plane"></i>
+                <span>FlightRoster</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+                <a href="roster.html" class="nav-link">
+                    <i class="fas fa-file-text"></i>
+                    Rosters
+                </a>
+                <a href="crew.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    Crew Management
+                </a>
+                <a href="flights.html" class="nav-link">
+                    <i class="fas fa-calendar"></i>
+                    Flight Schedule
+                </a>
+                <a href="assign-crew.html" class="nav-link active">
+                    <i class="fas fa-user-plus"></i>
+                    Assign Crew
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Header -->
+            <div class="assign-header">
+                <div>
+                    <h1>Assign Crew to Flight</h1>
+                    <p>Select flight and assign crew members</p>
+                </div>
+            </div>
+
+            <!-- Step 1: Flight Selection -->
+            <div class="step-container">
+                <div class="step-header">
+                    <div class="step-number active" id="step-1-number">1</div>
+                    <h2>Select Flight</h2>
+                </div>
+                
+                <div class="card">
+                    <div class="card-content">
+                        <div class="flight-selection-row">
+                            <div class="form-group">
+                                <label for="assign-flight-select">Choose Flight</label>
+                                <select id="assign-flight-select" class="form-select" onchange="selectFlight()">
+                                    <option value="">-- Select a flight --</option>
+                                    <option value="TK1234">TK1234 - IST → JFK (Boeing 777)</option>
+                                    <option value="TK5678">TK5678 - IST → LHR (Airbus A320)</option>
+                                    <option value="TK9012">TK9012 - IST → CDG (Airbus A320)</option>
+                                    <option value="TK7890">TK7890 - IST → NRT (Boeing 777)</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" style="margin-bottom: 20px;" onclick="proceedToCrewSelection()" id="proceed-btn" disabled>
+                                <i class="fas fa-arrow-right"></i>
+                                Proceed to Crew Selection
+                            </button>
+                        </div>
+
+                        <!-- Flight Details -->
+                        <div id="selected-flight-details" class="flight-details" style="display: none;">
+                            <div class="flight-info-grid">
+                                <div class="flight-info-item">
+                                    <i class="fas fa-plane"></i>
+                                    <div>
+                                        <strong id="flight-route"></strong>
+                                        <small id="flight-cities"></small>
+                                    </div>
+                                </div>
+                                <div class="flight-info-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <div>
+                                        <strong id="flight-datetime"></strong>
+                                        <small id="flight-duration"></small>
+                                    </div>
+                                </div>
+                                <div class="flight-info-item">
+                                    <i class="fas fa-cog"></i>
+                                    <div>
+                                        <strong id="flight-aircraft"></strong>
+                                        <small id="flight-seats"></small>
+                                    </div>
+                                </div>
+                                <div class="flight-info-item">
+                                    <i class="fas fa-users"></i>
+                                    <div>
+                                        <strong>Crew Requirements</strong>
+                                        <small>2 Flight Crew + 3-4 Cabin Crew</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Crew Assignment -->
+            <div class="step-container" id="crew-assignment-step" style="display: none;">
+                <div class="step-header">
+                    <div class="step-number" id="step-2-number">2</div>
+                    <h2>Assign Crew Members</h2>
+                    <div class="step-actions">
+                        <button class="btn" onclick="addNewCrewMember()">
+                            <i class="fas fa-plus"></i>
+                            Add New Crew Member
+                        </button>
+                        <button class="btn btn-primary" onclick="saveAssignments()" id="save-assignments-btn" disabled>
+                            <i class="fas fa-save"></i>
+                            Save Assignments
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Assignment Progress -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Assignment Progress</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="progress-grid">
+                            <div class="progress-item">
+                                <div class="progress-label">Flight Crew</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="flight-crew-progress" style="width: 0%"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <span id="flight-crew-assigned">0</span> / <span id="flight-crew-required">2</span>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="progress-label">Cabin Crew</div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="cabin-crew-progress" style="width: 0%"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <span id="cabin-crew-assigned">0</span> / <span id="cabin-crew-required">3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Crew Assignment Grid -->
+                <div class="assignment-main-grid">
+                    <!-- Available Compatible Crew -->
+                    <div class="available-crew-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>
+                                    <i class="fas fa-users"></i>
+                                    Compatible Crew for <span id="selected-aircraft-type"></span>
+                                </h3>
+                                <div class="crew-filters">
+                                    <select id="crew-type-filter" class="form-select" onchange="filterCompatibleCrew()">
+                                        <option value="all">All Compatible Crew</option>
+                                        <option value="flight">Flight Crew Only</option>
+                                        <option value="cabin">Cabin Crew Only</option>
+                                    </select>
+                                    <input type="text" id="crew-search" placeholder="Search crew..." class="form-input" oninput="filterCompatibleCrew()">
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="compatible-crew-list" id="compatible-crew-list">
+                                    <!-- Compatible crew will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Assignment Positions -->
+                    <div class="assignment-positions-section">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>
+                                    <i class="fas fa-clipboard-list"></i>
+                                    Flight Positions
+                                </h3>
+                            </div>
+                            <div class="card-content">
+                                <!-- Flight Crew Positions -->
+                                <div class="position-group">
+                                    <h4>
+                                        <i class="fas fa-plane"></i>
+                                        Flight Crew
+                                    </h4>
+                                    <div class="positions-grid">
+                                        <div class="position-card" data-position="captain" onclick="selectPosition('captain')">
+                                            <div class="position-header">
+                                                <i class="fas fa-star"></i>
+                                                <span>Captain</span>
+                                                <span class="required-badge">Required</span>
+                                            </div>
+                                            <div class="position-content" id="captain-assignment">
+                                                <div class="empty-position">
+                                                    <i class="fas fa-plus"></i>
+                                                    <span>Click to assign</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="position-card" data-position="first-officer" onclick="selectPosition('first-officer')">
+                                            <div class="position-header">
+                                                <i class="fas fa-user-tie"></i>
+                                                <span>First Officer</span>
+                                                <span class="required-badge">Required</span>
+                                            </div>
+                                            <div class="position-content" id="first-officer-assignment">
+                                                <div class="empty-position">
+                                                    <i class="fas fa-plus"></i>
+                                                    <span>Click to assign</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Cabin Crew Positions -->
+                                <div class="position-group">
+                                    <h4>
+                                        <i class="fas fa-users"></i>
+                                        Cabin Crew
+                                    </h4>
+                                    <div class="positions-grid">
+                                        <div class="position-card" data-position="chief-attendant" onclick="selectPosition('chief-attendant')">
+                                            <div class="position-header">
+                                                <i class="fas fa-crown"></i>
+                                                <span>Chief Flight Attendant</span>
+                                                <span class="required-badge">Required</span>
+                                            </div>
+                                            <div class="position-content" id="chief-attendant-assignment">
+                                                <div class="empty-position">
+                                                    <i class="fas fa-plus"></i>
+                                                    <span>Click to assign</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="position-card" data-position="flight-attendant-1" onclick="selectPosition('flight-attendant-1')">
+                                            <div class="position-header">
+                                                <i class="fas fa-user"></i>
+                                                <span>Flight Attendant</span>
+                                                <span class="required-badge">Required</span>
+                                            </div>
+                                            <div class="position-content" id="flight-attendant-1-assignment">
+                                                <div class="empty-position">
+                                                    <i class="fas fa-plus"></i>
+                                                    <span>Click to assign</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="position-card" data-position="flight-attendant-2" onclick="selectPosition('flight-attendant-2')">
+                                            <div class="position-header">
+                                                <i class="fas fa-user"></i>
+                                                <span>Flight Attendant</span>
+                                                <span class="optional-badge">Optional</span>
+                                            </div>
+                                            <div class="position-content" id="flight-attendant-2-assignment">
+                                                <div class="empty-position">
+                                                    <i class="fas fa-plus"></i>
+                                                    <span>Click to assign</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="position-card" data-position="chef" onclick="selectPosition('chef')">
+                                            <div class="position-header">
+                                                <i class="fas fa-utensils"></i>
+                                                <span>Chef</span>
+                                                <span class="optional-badge">Optional</span>
+                                            </div>
+                                            <div class="position-content" id="chef-assignment">
+                                                <div class="empty-position">
+                                                    <i class="fas fa-plus"></i>
+                                                    <span>Click to assign</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Crew Selection Modal -->
+    <div id="crew-selection-modal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Select Crew for <span id="modal-position-title"></span></h3>
+                <button class="modal-close" style="display: flex-end;" onclick="closeCrewSelectionModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-crew-list" id="modal-crew-list">
+                    <!-- Crew options will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New Crew Modal -->
+    <div id="add-crew-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Crew Member</h3>
+                <button class="modal-close" onclick="closeAddCrewModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-crew-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="new-crew-name">Full Name *</label>
+                            <input type="text" id="new-crew-name" class="form-input" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="new-crew-age">Age *</label>
+                            <input type="number" id="new-crew-age" class="form-input" min="18" max="65" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="new-crew-nationality">Nationality *</label>
+                            <select id="new-crew-nationality" class="form-select" required>
+                                <option value="">Select nationality</option>
+                                <option value="Turkish">Turkish</option>
+                                <option value="American">American</option>
+                                <option value="British">British</option>
+                                <option value="German">German</option>
+                                <option value="French">French</option>
+                                <option value="Spanish">Spanish</option>
+                                <option value="Italian">Italian</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="new-crew-type">Crew Type *</label>
+                            <select id="new-crew-type" class="form-select" onchange="updateCrewTypeFields()" required>
+                                <option value="">Select crew type</option>
+                                <option value="flight">Flight Crew</option>
+                                <option value="cabin">Cabin Crew</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Flight Crew Specific Fields -->
+                    <div id="flight-crew-fields" class="crew-type-fields" style="display: none;">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="new-crew-seniority">Seniority Level *</label>
+                                <select id="new-crew-seniority" class="form-select">
+                                    <option value="">Select seniority</option>
+                                    <option value="Senior">Senior</option>
+                                    <option value="Junior">Junior</option>
+                                    <option value="Trainee">Trainee</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="new-crew-aircraft">Aircraft Qualification *</label>
+                                <select id="new-crew-aircraft" class="form-select">
+                                    <option value="">Select aircraft</option>
+                                    <option value="Boeing 777">Boeing 777</option>
+                                    <option value="Airbus A320">Airbus A320</option>
+                                    <option value="Boeing 737">Boeing 737</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="new-crew-range">Max Flight Range (km) *</label>
+                                <input type="number" id="new-crew-range" class="form-input" min="1000" max="20000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cabin Crew Specific Fields -->
+                    <div id="cabin-crew-fields" class="crew-type-fields" style="display: none;">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="new-crew-cabin-type">Position Type *</label>
+                                <select id="new-crew-cabin-type" class="form-select">
+                                    <option value="">Select position</option>
+                                    <option value="Chief">Chief Flight Attendant</option>
+                                    <option value="Regular">Flight Attendant</option>
+                                    <option value="Chef">Chef</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="new-crew-aircraft-types">Aircraft Types (hold Ctrl for multiple)</label>
+                                <select id="new-crew-aircraft-types" class="form-select" multiple>
+                                    <option value="Boeing 777">Boeing 777</option>
+                                    <option value="Airbus A320">Airbus A320</option>
+                                    <option value="Boeing 737">Boeing 737</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div id="chef-fields" class="form-group" style="display: none;">
+                            <label for="new-crew-recipes">Specialties (comma separated)</label>
+                            <input type="text" id="new-crew-recipes" class="form-input" placeholder="e.g., Italian Cuisine, French Cuisine">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="new-crew-languages">Languages (comma separated) *</label>
+                        <input type="text" id="new-crew-languages" class="form-input" placeholder="e.g., English, Turkish, German" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeAddCrewModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveNewCrewMember()">Add Crew Member</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toast-message">Operation completed successfully!</span>
+        </div>
+    </div>
+
+    <script src="assign-crew.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

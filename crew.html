@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crew Management - FlightRoster</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-plane"></i>
+                <span>FlightRoster</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+                <a href="roster.html" class="nav-link">
+                    <i class="fas fa-file-text"></i>
+                    Rosters
+                </a>
+                <a href="crew.html" class="nav-link active">
+                    <i class="fas fa-users"></i>
+                    Crew Management
+                </a>
+                <a href="flights.html" class="nav-link">
+                    <i class="fas fa-calendar"></i>
+                    Flight Schedule
+                </a>
+                <a href="assign-crew.html" class="nav-link">
+                    <i class="fas fa-user-plus"></i>
+                    Assign Crew
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Header -->
+            <div class="roster-header">
+                <div>
+                    <h1>Crew Management</h1>
+                    <p>Manage flight and cabin crew information</p>
+                </div>
+                <button class="btn btn-primary" style="margin: 20px;">Add New Crew Member</button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="card">
+                <div class="card-content">
+                    <div class="search-filter-container">
+                        <div class="search-container">
+                            <input type="text" id="crew-search" placeholder="Search crew members..." class="form-input">
+                        </div>
+                        <select id="crew-filter" class="form-select">
+                            <option value="all">All Crew</option>
+                            <option value="flight">Flight Crew</option>
+                            <option value="cabin">Cabin Crew</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crew Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="flight-crew-count">5</h3>
+                        <p>Flight Crew</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="cabin-crew-count">8</h3>
+                        <p>Cabin Crew</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="chef-count">2</h3>
+                        <p>Chefs</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crew Tables -->
+            <div class="tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="showCrewTab('flight')">Flight Crew</button>
+                    <button class="tab-btn" onclick="showCrewTab('cabin')">Cabin Crew</button>
+                </div>
+
+                <!-- Flight Crew Tab -->
+                <div class="tab-content active" id="flight-crew-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>
+                                <i class="fas fa-plane"></i>
+                                Flight Crew (<span id="flight-crew-total">5</span>)
+                            </h2>
+                            <p>Pilots and flight officers</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="table-container">
+                                <table class="table" id="flight-crew-management-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Age</th>
+                                            <th>Nationality</th>
+                                            <th>Seniority</th>
+                                            <th>Aircraft Type</th>
+                                            <th>Max Range</th>
+                                            <th>Languages</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="flight-crew-management-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cabin Crew Tab -->
+                <div class="tab-content" id="cabin-crew-tab">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>
+                                <i class="fas fa-users"></i>
+                                Cabin Crew (<span id="cabin-crew-total">8</span>)
+                            </h2>
+                            <p>Flight attendants and service staff</p>
+                        </div>
+                        <div class="card-content">
+                            <div class="table-container">
+                                <table class="table" id="cabin-crew-management-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Age</th>
+                                            <th>Nationality</th>
+                                            <th>Type</th>
+                                            <th>Aircraft Types</th>
+                                            <th>Languages</th>
+                                            <th>Specialties</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cabin-crew-management-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toast-message">Operation completed successfully!</span>
+        </div>
+    </div>
+
+    <script src="crew.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Schedule - FlightRoster</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-plane"></i>
+                <span>FlightRoster</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+                <a href="roster.html" class="nav-link">
+                    <i class="fas fa-file-text"></i>
+                    Rosters
+                </a>
+                <a href="crew.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    Crew Management
+                </a>
+                <a href="flights.html" class="nav-link active">
+                    <i class="fas fa-calendar"></i>
+                    Flight Schedule
+                </a>
+                <a href="assign-crew.html" class="nav-link">
+                    <i class="fas fa-user-plus"></i>
+                    Assign Crew
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Header -->
+            <div class="roster-header">
+                <div>
+                    <h1>Flight Schedule</h1>
+                    <p>View and manage flight schedules</p>
+                </div>
+                <button class="btn btn-primary" style="margin: 20px;">Add New Flight</button>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="card">
+                <div class="card-content">
+                    <div class="flight-search-container">
+                        <div class="search-container">
+                            <input type="text" id="flight-search" placeholder="Search flights..." class="form-input">                           
+
+                        </div>
+                        <input type="date" id="date-filter" class="form-input">
+                        <select id="status-filter" class="form-select">
+                            <option value="all">All Status</option>
+                            <option value="scheduled">Scheduled</option>
+                            <option value="active">Active</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flight Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-flights">6</h3>
+                        <p>Total Flights</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="active-flights">1</h3>
+                        <p>Active</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-calendar"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="scheduled-flights">3</h3>
+                        <p>Scheduled</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="destinations">5</h3>
+                        <p>Destinations</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flights Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>
+                        <i class="fas fa-plane"></i>
+                        Flight Schedule (<span id="flights-count">6</span>)
+                    </h2>
+                    <p>Comprehensive flight information and schedules</p>
+                </div>
+                <div class="card-content">
+                    <div class="table-container">
+                        <table class="table" id="flights-table">
+                            <thead>
+                                <tr>
+                                    <th>Flight Number</th>
+                                    <th>Route</th>
+                                    <th>Date & Time</th>
+                                    <th>Duration</th>
+                                    <th>Aircraft</th>
+                                    <th>Distance</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="flights-table-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toast-message">Operation completed successfully!</span>
+        </div>
+    </div>
+
+    <script src="flights.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

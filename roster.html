@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Roster - FlightRoster</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-plane"></i>
+                <span>FlightRoster</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+                <a href="roster.html" class="nav-link active">
+                    <i class="fas fa-file-text"></i>
+                    Rosters
+                </a>
+                <a href="crew.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    Crew Management
+                </a>
+                <a href="flights.html" class="nav-link">
+                    <i class="fas fa-calendar"></i>
+                    Flight Schedule
+                </a>
+                <a href="assign-crew.html" class="nav-link">
+                    <i class="fas fa-user-plus"></i>
+                    Assign Crew
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Header -->
+            <div class="roster-header">
+                <div>
+                    <h1>Flight Roster</h1>
+                    <p>Generate and view comprehensive flight rosters</p>
+                </div>
+                <div class="header-actions">
+                    <select id="flight-select" class="form-select">
+                        <option value="TK1234">TK1234 - IST → JFK</option>
+                        <option value="TK5678">TK5678 - IST → LHR</option>
+                        <option value="TK9012">TK9012 - IST → CDG</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="generateRoster()"style="
+    margin-top: 20px;>
+                        <span id="generate-text">Generate Roster</span>
+                        <div id="generate-loading" class="loading" style="display: none;"></div>
+                    </button>
+                    <button class="btn" onclick="exportRoster()" id="export-btn" disabled>
+                        <i class="fas fa-download"></i>
+                        Export JSON
+                    </button>
+                </div>
+            </div>
+
+            <!-- Flight Information -->
+            <div id="flight-info" class="card" style="display: none;">
+                <div class="card-header">
+                    <h2>
+                        <i class="fas fa-plane"></i>
+                        Flight Information - <span id="flight-number"></span>
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <div class="flight-details-grid">
+                        <div class="detail-item">
+                            <label>Route</label>
+                            <div id="flight-route"></div>
+                            <small id="flight-cities"></small>
+                        </div>
+                        <div class="detail-item">
+                            <label>Date & Duration</label>
+                            <div id="flight-date"></div>
+                            <small id="flight-duration"></small>
+                        </div>
+                        <div class="detail-item">
+                            <label>Aircraft</label>
+                            <div id="aircraft-type"></div>
+                            <small id="aircraft-seats"></small>
+                        </div>
+                        <div class="detail-item">
+                            <label>Distance</label>
+                            <div id="flight-distance"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Roster Views -->
+            <div id="roster-views" class="card" style="display: none;">
+                <div class="card-header">
+                    <h2>Roster Views</h2>
+                    <p>Choose how to view the flight roster information</p>
+                </div>
+                <div class="card-content">
+                    <div class="tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" onclick="showRosterTab('tabular')">Tabular View</button>
+                            <button class="tab-btn" onclick="showRosterTab('plane')">Plane View</button>
+                            <button class="tab-btn" onclick="showRosterTab('extended')">Extended View</button>
+                        </div>
+
+                        <!-- Tabular View -->
+                        <div class="tab-content active" id="tabular-view">
+                            <div class="table-container">
+                                <table class="table" id="roster-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>ID</th>
+                                            <th>Type</th>
+                                            <th>Position/Seat</th>
+                                            <th>Nationality</th>
+                                            <th>Additional Info</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="roster-table-body">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Plane View -->
+                        <div class="tab-content" id="plane-view">
+                            <div class="seat-plan">
+                                <!-- Cockpit -->
+                                <div class="cockpit">
+                                    <h3><i class="fas fa-plane"></i> Cockpit</h3>
+                                    <div class="seat-grid" id="cockpit-seats">
+                                    </div>
+                                </div>
+
+                                <!-- Cabin Crew Stations -->
+                                <div class="crew-stations">
+                                    <h3><i class="fas fa-users"></i> Cabin Crew Stations</h3>
+                                    <div class="seat-grid" id="crew-seats">
+                                    </div>
+                                </div>
+
+                                <!-- Passenger Cabin -->
+                                <div class="passenger-cabin">
+                                    <h3><i class="fas fa-user"></i> Passenger Cabin</h3>
+                                    <div id="passenger-seats">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Extended View -->
+                        <div class="tab-content" id="extended-view">
+                            <!-- Flight Crew -->
+                            <div class="crew-section">
+                                <h3><i class="fas fa-plane"></i> Flight Crew</h3>
+                                <div class="table-container">
+                                    <table class="table" id="flight-crew-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Age</th>
+                                                <th>Seniority</th>
+                                                <th>Languages</th>
+                                                <th>Vehicle Restriction</th>
+                                                <th>Max Range</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="flight-crew-body">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Cabin Crew -->
+                            <div class="crew-section">
+                                <h3><i class="fas fa-users"></i> Cabin Crew</h3>
+                                <div class="table-container">
+                                    <table class="table" id="cabin-crew-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Age</th>
+                                                <th>Type</th>
+                                                <th>Languages</th>
+                                                <th>Vehicle Restrictions</th>
+                                                <th>Specialties</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cabin-crew-body">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Passengers -->
+                            <div class="crew-section">
+                                <h3><i class="fas fa-user"></i> Passengers</h3>
+                                <div class="table-container">
+                                    <table class="table" id="passengers-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Age</th>
+                                                <th>Seat Number</th>
+                                                <th>Seat Type</th>
+                                                <th>Nationality</th>
+                                                <th>Special Notes</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="passengers-body">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toast-message">Operation completed successfully!</span>
+        </div>
+    </div>
+
+    <script src="roster.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
