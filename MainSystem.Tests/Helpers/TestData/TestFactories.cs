@@ -28,7 +28,8 @@ public static class TestFlightFactory
     {
         var source = new Airport("Turkey", "Istanbul", "Istanbul Airport", new AirportCode("IST"));
         var destination = new Airport("Turkey", "Ankara", "Ankara Airport", new AirportCode("ESB"));
-        var vehicle = new VehicleType(AircraftType.Embraer190, 100, maxPassengers, 20, "Standard Menu");
+        // Use Boeing737 instead of Embraer190 since Embraer190 is not supported in SeatPlanFactory
+        var vehicle = new VehicleType(AircraftType.Boeing737, 100, maxPassengers, 20, "Standard Menu");
 
         return new Flight(
             new FlightNumber("TK5678"),
@@ -72,7 +73,7 @@ public static class TestPilotFactory
         var info = new PersonInfo(
             $"Pilot {seniority}",
             35,
-            "Male",
+            "Erkek", // Use Turkish instead of "Male"
             "Turkish",
             new[] { "Turkish", "English" }
         );
@@ -95,7 +96,7 @@ public static class TestAttendantFactory
 {
     public static CabinAttendantMember CreateChiefAttendant()
     {
-        var info = new PersonInfo("Chief Attendant", 30, "Female", "Turkish", new[] { "Turkish", "English" });
+        var info = new PersonInfo("Chief Attendant", 30, "Kadın", "Turkish", new[] { "Turkish", "English" }); // Use Turkish instead of "Female"
         return new CabinAttendantMember(
             Guid.NewGuid(),
             info,
@@ -106,7 +107,7 @@ public static class TestAttendantFactory
 
     public static CabinAttendantMember CreateRegularAttendant()
     {
-        var info = new PersonInfo("Flight Attendant", 25, "Female", "Turkish", new[] { "Turkish", "English" });
+        var info = new PersonInfo("Flight Attendant", 25, "Kadın", "Turkish", new[] { "Turkish", "English" }); // Use Turkish instead of "Female"
         return new CabinAttendantMember(
             Guid.NewGuid(),
             info,
@@ -117,7 +118,7 @@ public static class TestAttendantFactory
 
     public static CabinAttendantMember CreateChef()
     {
-        var info = new PersonInfo("Chef", 35, "Male", "French", new[] { "French", "English" });
+        var info = new PersonInfo("Chef", 35, "Erkek", "French", new[] { "French", "English" }); // Use Turkish instead of "Male"
         return new CabinAttendantMember(
             Guid.NewGuid(),
             info,
@@ -149,7 +150,7 @@ public static class TestPassengerFactory
 {
     public static PassengerMember CreatePassenger(string flightNumber = "TK1234")
     {
-        var info = new PersonInfo("John Doe", 30, "Male", "American", new[] { "English" });
+        var info = new PersonInfo("John Doe", 30, "Erkek", "American", new[] { "English" }); // Use Turkish instead of "Male"
         return new PassengerMember(
             Guid.NewGuid(),
             new FlightNumber(flightNumber),
@@ -161,7 +162,7 @@ public static class TestPassengerFactory
 
     public static PassengerMember CreateBusinessPassenger(string flightNumber = "TK1234")
     {
-        var info = new PersonInfo("Jane Smith", 40, "Female", "British", new[] { "English" });
+        var info = new PersonInfo("Jane Smith", 40, "Kadın", "British", new[] { "English" }); // Use Turkish instead of "Female"
         return new PassengerMember(
             Guid.NewGuid(),
             new FlightNumber(flightNumber),
@@ -173,7 +174,7 @@ public static class TestPassengerFactory
 
     public static PassengerMember CreateInfant(string flightNumber = "TK1234", Guid? parentId = null)
     {
-        var info = new PersonInfo("Baby Doe", 1, "Male", "American", new[] { "English" });
+        var info = new PersonInfo("Baby Doe", 1, "Erkek", "American", new[] { "English" }); // Use Turkish instead of "Male"
         return new PassengerMember(
             Guid.NewGuid(),
             new FlightNumber(flightNumber),
@@ -191,7 +192,8 @@ public static class TestPassengerFactory
         
         for (int i = 0; i < count; i++)
         {
-            var info = new PersonInfo($"Passenger {i}", 20 + i, "Male", "Turkish", new[] { "Turkish" });
+            var gender = i % 2 == 0 ? "Erkek" : "Kadın"; // Alternate between Turkish gender values
+            var info = new PersonInfo($"Passenger {i}", 20 + i, gender, "Turkish", new[] { "Turkish" });
             passengers.Add(new PassengerMember(
                 Guid.NewGuid(),
                 new FlightNumber(flightNumber),

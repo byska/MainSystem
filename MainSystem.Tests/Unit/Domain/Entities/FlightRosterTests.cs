@@ -15,14 +15,19 @@ public class FlightRosterTests
         // Arrange
         var flight = TestFlightFactory.CreateTestFlight();
         var roster = new FlightRoster(flight);
-        var pilot = TestPilotFactory.CreateSeniorPilot();
-
-        // Act
-        var action = () => roster.AddPilot(pilot);
+        
+        // Add a senior pilot first
+        var seniorPilot = TestPilotFactory.CreateSeniorPilot();
+        roster.AddPilot(seniorPilot);
+        
+        // Act - Add a junior pilot (this should work since we have both types)
+        var juniorPilot = TestPilotFactory.CreateJuniorPilot();
+        var action = () => roster.AddPilot(juniorPilot);
 
         // Assert
         action.Should().NotThrow();
-        roster.Pilots.Should().Contain(pilot);
+        roster.Pilots.Should().Contain(seniorPilot);
+        roster.Pilots.Should().Contain(juniorPilot);
     }
 
     [Fact]
@@ -47,13 +52,20 @@ public class FlightRosterTests
         // Arrange
         var flight = TestFlightFactory.CreateTestFlight();
         var roster = new FlightRoster(flight);
-        var attendant = TestAttendantFactory.CreateChiefAttendant();
-
-        // Act
-        roster.AddAttendant(attendant);
+        
+        // First add 4 regular attendants (minimum requirement)
+        for (int i = 0; i < 4; i++)
+        {
+            roster.AddAttendant(TestAttendantFactory.CreateRegularAttendant());
+        }
+        
+        // Act - Now add a chief attendant (should work since we have the required regulars)
+        var chiefAttendant = TestAttendantFactory.CreateChiefAttendant();
+        var action = () => roster.AddAttendant(chiefAttendant);
 
         // Assert
-        roster.Attendants.Should().Contain(attendant);
+        action.Should().NotThrow();
+        roster.Attendants.Should().Contain(chiefAttendant);
     }
 
     [Fact]
@@ -62,8 +74,10 @@ public class FlightRosterTests
         // Arrange
         var flight = TestFlightFactory.CreateSmallFlight(maxPassengers: 1);
         var roster = new FlightRoster(flight);
-        var passenger1 = TestPassengerFactory.CreatePassenger();
-        var passenger2 = TestPassengerFactory.CreatePassenger();
+        
+        // Create passengers with the correct flight number to match the flight
+        var passenger1 = TestPassengerFactory.CreatePassenger("TK5678"); // Match the flight number from CreateSmallFlight
+        var passenger2 = TestPassengerFactory.CreatePassenger("TK5678"); // Match the flight number from CreateSmallFlight
 
         // Act
         roster.AddPassenger(passenger1);

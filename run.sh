@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Run .NET commands using the virtual environment
+# Run .NET commands using the virtual environment (Unit tests only)
 
 set -e
 
@@ -17,19 +17,23 @@ if [ ! -d "$VENV_DIR/dotnet" ]; then
     exit 1
 fi
 
-echo "Using virtual environment: $VENV_DIR"
+echo "🧪 Using virtual environment: $VENV_DIR"
+echo "🧪 Running Unit Tests Only (Database tests disabled)"
 
 # Run the commands
-echo "Running dotnet restore..."
+echo "📦 Running dotnet restore..."
 dotnet restore --packages "$NUGET_PACKAGES"
 
-echo "Running dotnet build..."
+echo "🔨 Running dotnet build..."
 dotnet build --no-restore
 
-echo "Running dotnet test --list-tests..."
-dotnet test --list-tests --no-build
+echo "📋 Listing unit tests only..."
+dotnet test --list-tests --filter "FullyQualifiedName~Unit|FullyQualifiedName~BlackBox" --no-build
 
-echo "Running dotnet test with verbosity..."
-dotnet test -v normal
+echo "🧪 Running unit tests with verbosity..."
+dotnet test --filter "FullyQualifiedName~Unit|FullyQualifiedName~BlackBox" -v normal --no-build
 
-echo "✅ All commands completed successfully!"
+echo ""
+echo "✅ Unit tests completed successfully!"
+echo "ℹ️  Database-dependent tests were skipped (Integration, Acceptance, Security)"
+echo "📊 Use these results for your test report"

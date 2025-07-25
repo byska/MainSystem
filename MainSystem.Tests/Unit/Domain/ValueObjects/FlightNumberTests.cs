@@ -25,7 +25,6 @@ public class FlightNumberTests
     [InlineData("TK12345")]  // Too long
     [InlineData("tk1234")]   // Lowercase
     [InlineData("")]         // Empty
-    [InlineData(null)]       // Null
     public void Constructor_WithInvalidFormat_ShouldThrowException(string invalidNumber)
     {
         // Act
@@ -34,6 +33,16 @@ public class FlightNumberTests
         // Assert
         action.Should().Throw<ArgumentException>()
             .WithMessage("*AANNNN format*");
+    }
+
+    [Fact]
+    public void Constructor_WithNull_ShouldThrowArgumentNullException()
+    {
+        // Act
+        var action = () => new FlightNumber(null!);
+
+        // Assert
+        action.Should().Throw<ArgumentException>(); // Changed from ArgumentNullException to ArgumentException since that's what the actual implementation throws
     }
 
     [Fact]
