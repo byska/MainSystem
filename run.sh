@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Run .NET commands using the virtual environment (Unit tests only)
+# Run .NET commands using the virtual environment (Test discovery only)
 
 set -e
 
@@ -18,22 +18,47 @@ if [ ! -d "$VENV_DIR/dotnet" ]; then
 fi
 
 echo "🧪 Using virtual environment: $VENV_DIR"
-echo "🧪 Running Unit Tests Only (Database tests disabled)"
+echo "✅ .NET version: $(dotnet --version)"
 
-# Run the commands
+echo ""
+echo "🔄 Running basic operations..."
+
 echo "📦 Running dotnet restore..."
 dotnet restore --packages "$NUGET_PACKAGES"
+echo "✅ Restore completed"
 
 echo "🔨 Running dotnet build..."
 dotnet build --no-restore
-
-echo "📋 Listing unit tests only..."
-dotnet test --list-tests --filter "FullyQualifiedName~Unit|FullyQualifiedName~BlackBox" --no-build
-
-echo "🧪 Running unit tests with verbosity..."
-dotnet test --filter "FullyQualifiedName~Unit|FullyQualifiedName~BlackBox" -v normal --no-build
+echo "✅ Build completed successfully"
 
 echo ""
-echo "✅ Unit tests completed successfully!"
-echo "ℹ️  Database-dependent tests were skipped (Integration, Acceptance, Security)"
-echo "📊 Use these results for your test report"
+echo "🧪 Running Tests..."
+
+echo "📋 Discovering tests..."
+TEST_COUNT=$(dotnet test --list-tests --no-build 2>/dev/null | grep -c "    " || echo "0")
+echo "✅ Found $TEST_COUNT total tests"
+
+echo ""
+echo "🎯 Running Unit Tests (safer, no external dependencies)..."
+dotnet test --filter "Category=Unit" -v normal --no-build
+echo "✅ Unit tests completed successfully"
+
+echo ""
+echo "📦 Running Input Validation Tests..."
+dotnet test --filter "Category!=Integration&Category!=Security&FullyQualifiedName~BlackBox" -v normal --no-build
+echo "✅ Input validation tests completed"
+
+echo ""
+echo "📊 Test Summary:"
+echo "✅ Core functionality tests completed"
+echo "⚠️  Integration tests skipped (require external APIs)"
+echo "⚠️  Database tests skipped (require SQL Server)"
+
+echo ""
+echo "💡 To run all tests (including integration):"
+echo "   1. Set up SQL Server database"
+echo "   2. Configure external API endpoints in appsettings.json"
+echo "   3. Run: dotnet test --verbosity normal"
+
+echo ""
+echo "🎉 Basic test run completed!"
